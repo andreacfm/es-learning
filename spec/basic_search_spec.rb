@@ -1,10 +1,9 @@
 require 'spec_helper'
 
-describe "basic searching" do
+describe 'Basic Search' do
 
-	it 'should' do
-		client = Elasticsearch::Client.new log: true
-		p client.cluster.health
-	end		
+  context 'given an indexed article' do
+    
+  end
   
 end

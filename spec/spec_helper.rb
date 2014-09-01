@@ -16,8 +16,22 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'elasticsearch'
+require 'elasticsearch/extensions/test/cluster'
 
 RSpec.configure do |config|
+
+  config.before(:all) do
+    Elasticsearch::Extensions::Test::Cluster.start nodes: 2,
+        cluster_name: 'es-learning-cluster',
+        command: '/usr/local/Cellar/elasticsearch090/0.90.13/bin/elasticsearch',
+        port: 9350
+    $client = Elasticsearch::Client.new host: 'localhost:9350', log: true
+  end
+
+  config.after(:all) do
+    Elasticsearch::Extensions::Test::Cluster.stop port: 9350
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
