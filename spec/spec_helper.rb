@@ -16,20 +16,30 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'elasticsearch'
-require 'elasticsearch/extensions/test/cluster'
+require 'hashie'
+#require 'elasticsearch/extensions/test/cluster'
+
+module Helpers
+  def res
+    @res ||= Hashie::Mash.new @response
+  end
+end
 
 RSpec.configure do |config|
 
-  config.before(:all) do
-    Elasticsearch::Extensions::Test::Cluster.start nodes: 2,
-        cluster_name: 'es-learning-cluster',
-        command: '/usr/local/Cellar/elasticsearch090/0.90.13/bin/elasticsearch',
-        port: 9350
-    $client = Elasticsearch::Client.new host: 'localhost:9350', log: true
+  include Helpers
+
+  config.before(:suite) do
+    #Elasticsearch::Extensions::Test::Cluster.start
+    $client = Elasticsearch::Client.new host: ENV['TEST_CLUSTER_HOST'], trace: ENV['DEBUG']
   end
 
-  config.after(:all) do
-    Elasticsearch::Extensions::Test::Cluster.stop port: 9350
+  config.after(:suite) do
+    #Elasticsearch::Extensions::Test::Cluster.stop port: 9350
+  end
+
+  config.before do
+    $client.indices.delete index: 'books' if $client.indices.exists index: 'books'
   end
 
 # The settings below are suggested to provide a good initial experience
