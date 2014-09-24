@@ -28,12 +28,12 @@ describe 'Stop Words' do
     end
 
     specify do
-      @response = $client.search(index: 'books', type: 'book', body:{ query:{ term:{ title: 'testing and' }}})
+      @response = $client.search(index: 'books', type: 'book', body:{ query:{ term:{ title: 'testing' }}})
       expect(res.hits.total).to eq 1
     end
 
     specify do
-      @response = $client.search(index: 'books', type: 'book', body:{ query:{ match:{ title: 'testing and' }}})
+      @response = $client.search(index: 'books', type: 'book', body:{ query:{ term:{ title: 'and' }}})
       expect(res.hits.total).to eq 0
     end
 
